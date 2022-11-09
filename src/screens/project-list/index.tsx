@@ -1,13 +1,11 @@
-import React from 'react';
-
 import { useEffect, useState } from "react"
 import { cleanObject, useDebounce, useMount } from 'utils';
-import * as qs from 'qs';
+import styled from '@emotion/styled';
 
 import { List } from "./list"
 import { SearchPanel } from "./search-panel"
 
-const apiUrl = 'http://localhost:3001';
+import { useHttp } from 'utils/http';
 
 export const ProjectListScreen = () => {
   const [list, setList] = useState([]);
@@ -19,24 +17,24 @@ export const ProjectListScreen = () => {
 
   const debounceParam = useDebounce(param, 200);
 
+  const client = useHttp();
+
   useEffect(() => {
-    fetch(`${apiUrl}/projects?${qs.stringify(cleanObject(debounceParam))}`).then(async (response) => {
-      if (response.ok) {
-        setList(await response.json());
-      }
-    })
+    client('projects', {data: cleanObject(debounceParam)}).then(setList);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounceParam]);
 
   useMount(() => {
-    fetch(`${apiUrl}/users`).then(async (response) => {
-      if (response.ok) {
-        setUsers(await response.json());
-      }
-    })
+    client('users').then(setUsers);
   });
 
-  return <div>
+  return <Container>
+    <h1>项目列表</h1>
     <SearchPanel users={users} param={param} setParam={setParam} />
     <List users={users} list={list} />
-  </div>
+  </Container>
 }
+
+const Container = styled.div`
+  padding: 3.2rem;
+`;
