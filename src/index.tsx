@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { loadDevTools } from 'jira-dev-tool';
+import { loadServer, DevTools } from 'jira-dev-tool';
 
 import { AppProovider } from 'context/index';
 
@@ -11,9 +11,10 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-loadDevTools(() => root.render(
+loadServer(() => root.render(
   <React.StrictMode>
     <AppProovider>
+      <DevTools />
       <App />
     </AppProovider>
   </React.StrictMode>
